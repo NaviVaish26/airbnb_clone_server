@@ -102,7 +102,7 @@ app.post('/upload-by-link', async (req, res) => {
   const newName = Date.now() + '.jpg';
   const options = {
     url: link,
-    dest: __dirname + '/uploads/' + newName,
+    dest: ALLOWED_ORIGIN + '/uploads/' + newName,
   };
   await download.image(options);
   res.json(newName);
