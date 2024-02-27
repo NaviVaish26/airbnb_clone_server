@@ -24,11 +24,12 @@ const jwtSecret = 'hfikf345gkawegfi636-=[uwfgkiuwg';
 
 app.use(express.json());
 app.use(cookieParser());
-// app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(
   cors({
-    credentials: true,
     origin: ALLOWED_ORIGIN,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionSuccessStatus: 200,
   })
 );
 
@@ -105,7 +106,7 @@ app.post('/upload-by-link', async (req, res) => {
   const newName = Date.now() + '.jpg';
   const options = {
     url: link,
-    dest: ALLOWED_ORIGIN + '/api/uploads/' + newName,
+    dest: '/api/uploads/' + newName,
   };
   await download.image(options);
   res.json(newName);
@@ -126,14 +127,16 @@ app.post('/upload-by-link', async (req, res) => {
 //   res.json(uploadedFiles);
 // });
 
-const photosMiddleware = multer({ dest: '/api/uploads/' });
+const photosMiddleware = multer({
+  destination: '/api/uploads/', // Replace with your disk mount path
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname); // Generate unique filenames
+  },
+});
 
 app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
-  const uploadedFiles = [];
-  for (let i = 0; i < req.files.length; i++) {
-    const { path, originalname } = req.files[i];
-    uploadedFiles.push(path);
-  }
+  const uploadedFiles = req.file;
+
   res.json(uploadedFiles.map((path) => `/api/uploads/${path}`));
 });
 
