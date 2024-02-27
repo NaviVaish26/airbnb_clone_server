@@ -30,6 +30,7 @@ app.use(
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'UPDATE'],
   })
 );
 
