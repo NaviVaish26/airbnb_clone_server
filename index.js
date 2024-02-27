@@ -8,8 +8,11 @@ const cookieParser = require('cookie-parser');
 const download = require('image-downloader');
 const multer = require('multer');
 const fs = require('fs');
+const path = require('path');
+
 const Place = require('./models/Place');
 const Booking = require('./models/Booking');
+
 const PORT = process.env.PORT || 3000;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://localhost:5173';
 
@@ -108,19 +111,30 @@ app.post('/upload-by-link', async (req, res) => {
   res.json(newName);
 });
 
-const photosMiddleware = multer({ dest: 'uploads' });
+// const photosMiddleware = multer({ dest: 'uploads' });
+
+// app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
+//   const uploadedFiles = [];
+//   for (let i = 0; i < req.files.length; i++) {
+//     const { path, originalname } = req.files[i];
+//     const parts = originalname.split('.');
+//     const ext = parts[parts.length - 1];
+//     const newPath = path + '.' + ext;
+//     fs.renameSync(path, newPath);
+//     uploadedFiles.push(newPath.replace('uploads/', ''));
+//   }
+//   res.json(uploadedFiles);
+// });
+
+const photosMiddleware = multer({ dest: '/api/uploads/' });
 
 app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
   const uploadedFiles = [];
   for (let i = 0; i < req.files.length; i++) {
     const { path, originalname } = req.files[i];
-    const parts = originalname.split('.');
-    const ext = parts[parts.length - 1];
-    const newPath = path + '.' + ext;
-    fs.renameSync(path, newPath);
-    uploadedFiles.push(newPath.replace('uploads/', ''));
+    uploadedFiles.push(path);
   }
-  res.json(uploadedFiles);
+  res.json(uploadedFiles.map((path) => `/api/uploads/${path}`));
 });
 
 app.post('/places', (req, res) => {
