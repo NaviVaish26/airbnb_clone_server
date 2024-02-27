@@ -27,12 +27,11 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: ALLOWED_ORIGIN,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionSuccessStatus: 200,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'UPDATE'],
   })
 );
-app.use(express.static('uploads'));
 
 mongoose.connect(process.env.MONGO_URL);
 
