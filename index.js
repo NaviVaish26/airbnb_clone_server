@@ -11,11 +11,10 @@ const places = require('./routes/places');
 const bookings = require('./routes/bookings');
 const uploads = require('./routes/upload');
 
-const PORT = process.env.PORT;
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
-
 require('dotenv').config();
 const app = express();
+const PORT = process.env.PORT;
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
 
 const jwtSecret = process.env.JWT_SECRET;
 
